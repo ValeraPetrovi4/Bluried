@@ -12,7 +12,7 @@ public class Holder : MonoBehaviour
     private bool Grab = false;   //ф-ция притяжения
     private bool Throw = false;   //ф-ция толчка
     public Transform offset;
-    public Camera camera;
+    public Camera cam;
     RaycastHit hit;   //луч
 
 
@@ -24,7 +24,7 @@ public class Holder : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Physics.Raycast(camera.transform.position,camera.transform.forward, out hit, RayDistance);
+            Physics.Raycast(cam.transform.position,cam.transform.forward, out hit, RayDistance);
             if (hit.rigidbody)
             {
                 GRABI = GRABI + 1;
@@ -81,7 +81,7 @@ public class Holder : MonoBehaviour
         {//ф-ция толчка
             if (hit.rigidbody)
             {
-                hit.rigidbody.velocity = camera.transform.forward * throwPower;
+                hit.rigidbody.velocity = cam.transform.forward * throwPower;
                 Throw = false;
             }
         }
@@ -89,7 +89,7 @@ public class Holder : MonoBehaviour
 
     private void Grabb()
     {
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out hit, RayDistance);
         if (hit.rigidbody)
         {
