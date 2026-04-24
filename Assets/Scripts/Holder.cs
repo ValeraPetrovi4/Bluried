@@ -73,8 +73,15 @@ public class Holder : MonoBehaviour
             if (hit.rigidbody)
             {
                 hit.rigidbody.velocity = (offset.position - (hit.transform.position + hit.rigidbody.centerOfMass)) * grabPower;
-                hit.transform.Rotate(0, Input.GetAxis("Mouse ScrollWheel") * 100, 0);
-            }
+                if (hit.rigidbody.gameObject.tag == "FlashLight")
+                {
+                    hit.transform.rotation = cam.transform.rotation;
+                }
+                else
+                {
+                    hit.transform.Rotate(0, Input.GetAxis("Mouse ScrollWheel") * 100, 0);
+                }
+                }
         }
 
         if (Throw)
