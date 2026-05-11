@@ -15,6 +15,7 @@ public class Holder : MonoBehaviour
     public Camera cam;
     RaycastHit hit;   //луч
 
+    private bool ableToPick = true;
 
     private void Start()
     {
@@ -24,8 +25,14 @@ public class Holder : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Physics.Raycast(cam.transform.position,cam.transform.forward, out hit, RayDistance);
-            if (hit.rigidbody)
+            Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, RayDistance);
+            GameObject g = null;
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, RayDistance))
+            {
+                g = hit.transform.gameObject;
+                //Debug.Log(g.name);
+            }
+            if (hit.rigidbody && hit.transform.tag != "ButtonPicker")
             {
                 GRABI = GRABI + 1;
                 switch (GRABI)
@@ -47,6 +54,27 @@ public class Holder : MonoBehaviour
                 if (Grab == false)
                 {
                     GRABI = 0;
+                }
+            }
+            if (g != null && (g.tag == "ButtonPicker" && ableToPick))
+            {
+                ButtonPicker button = g.GetComponent<ButtonPicker>();
+                StartCoroutine(AnimController(button));
+                if (button.button == "Refuse" || button.button == "Apply")
+                {
+                    if(button.button == "Apply")
+                    {
+                        button.numpad.OpenDoor();
+                        StartCoroutine(pk());
+                    }
+                    else
+                    {
+                        button.numpad.Code = "";
+                    }
+                }
+                else
+                {
+                    button.numpad.Code += button.button;
                 }
             }
             //  Debug.Log(GRABI);
@@ -102,5 +130,17 @@ public class Holder : MonoBehaviour
         {
             Grab = true;
         }
+    }
+    public IEnumerator pk()
+    {
+        ableToPick = false;
+        yield return new WaitForSeconds(3f);
+        ableToPick = true;
+    }
+    public IEnumerator AnimController(ButtonPicker button)
+    {
+        button.Picker.SetBool("Picker", true);
+        yield return new WaitForSeconds(0.09f);
+        button.Picker.SetBool("Picker", false);
     }
 }
